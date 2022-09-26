@@ -73,4 +73,6 @@ object RetrofitModule {
     fun provideApiService(retrofit: Retrofit): ApiInterface {
         return retrofit.create(ApiInterface::class.java)
     }
+
+
 }

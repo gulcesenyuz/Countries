@@ -9,8 +9,8 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModuleImp {
-  @Provides
-  fun  repositoryImplementation(service : ApiInterface) : Repository{
-    return Repository(service)
-  }
+    @Provides
+    fun repositoryImplementation(service: ApiInterface): Repository {
+        return Repository(service)
+    }
 }

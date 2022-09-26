@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.countries.data.model.CountryDetailModel
+import com.example.countries.data.model.CountryModel
+import com.example.countries.data.model.DetailResponseModel
 import com.example.countries.data.model.ResponseModel
 import com.example.countries.data.repository.Repository
 import com.example.countries.util.NetworkResponse
@@ -19,27 +22,52 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _countriesList: MutableLiveData<ResponseModel?> = MutableLiveData()
-    val countriesList : MutableLiveData<ResponseModel?> get() = _countriesList
+    val countriesList: MutableLiveData<ResponseModel?> get() = _countriesList
 
+    private val _countryDetail: MutableLiveData<DetailResponseModel?> = MutableLiveData()
+    val countryDetail: MutableLiveData<DetailResponseModel?> get() = _countryDetail
 
-      fun getCountries(limit:String){
-      viewModelScope.launch {
-          repository.getAllCountries(limit).collect{response->
+    fun getCountries(limit: String) {
+        viewModelScope.launch {
+            repository.getAllCountries(limit).collect { response ->
 
-              when(response){
-                  is NetworkResponse.Loading->{
+                when (response) {
+                    is NetworkResponse.Loading -> {
 
-                  }
-                  is NetworkResponse.Success->{
-                      _countriesList.postValue(response.data)
-                      Log.d("VM REPosnse:", response.data.toString())
-                  }
-                  is NetworkResponse.Error->{
+                    }
+                    is NetworkResponse.Success -> {
+                        _countriesList.postValue(response.data)
+                        Log.d("VM REPosnse:", response.data.toString())
+                    }
+                    is NetworkResponse.Error -> {
 
-                  }
-              }
-              }
-          }
-      }
+                    }
+                }
+            }
+        }
+    }
+
+    fun getCountryDetail(countryCode: String) {
+        viewModelScope.launch {
+            repository.getCountryDetails(countryCode).collect { response ->
+
+                when (response) {
+                    is NetworkResponse.Loading -> {
+
+                    }
+                    is NetworkResponse.Success -> {
+                        _countryDetail.postValue(response.data)
+
+                    }
+                    is NetworkResponse.Error -> {
+
+                    }
+                }
+            }
+        }
+    }
 
 }
+
+
+

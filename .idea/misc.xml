@@ -7,12 +7,12 @@
         <entry key="..\:/Users/gizem/Countries/app/src/main/res/drawable/ic_saved.xml" value="0.181" />
         <entry key="..\:/Users/gizem/Countries/app/src/main/res/drawable/ic_star_empty.xml" value="0.181" />
         <entry key="..\:/Users/gizem/Countries/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Users/gizem/Countries/app/src/main/res/layout/fragment_detail.xml" value="0.17239583333333333" />
+        <entry key="..\:/Users/gizem/Countries/app/src/main/res/layout/fragment_detail.xml" value="0.25" />
         <entry key="..\:/Users/gizem/Countries/app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="..\:/Users/gizem/Countries/app/src/main/res/layout/fragment_saved_countries.xml" value="0.17239583333333333" />
         <entry key="..\:/Users/gizem/Countries/app/src/main/res/layout/nav_bottom.xml" value="0.17239583333333333" />
         <entry key="..\:/Users/gizem/Countries/app/src/main/res/layout/rv_item.xml" value="0.33" />
-        <entry key="..\:/Users/gizem/Countries/app/src/main/res/menu/nav_bottom.xml" value="0.17239583333333333" />
+        <entry key="..\:/Users/gizem/Countries/app/src/main/res/menu/nav_bottom.xml" value="0.1" />
       </map>
     </option>
   </component>

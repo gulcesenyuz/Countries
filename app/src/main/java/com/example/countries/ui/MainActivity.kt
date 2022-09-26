@@ -2,20 +2,20 @@ package com.example.countries.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI.setupWithNavController
+
+
 import com.example.countries.R
 import com.example.countries.databinding.ActivityMainBinding
 import com.example.countries.ui.fragment.HomeFragment
 import com.example.countries.ui.fragment.SavedCountriesFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    lateinit var bottomNav: BottomNavigationView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,24 +26,29 @@ class MainActivity : AppCompatActivity() {
         loadFragment(HomeFragment())
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.mainFragment -> {
+                R.id.destination_home -> {
                     loadFragment(HomeFragment())
                 }
-                R.id.savedCountriesFragment -> {
+                R.id.destination_saved -> {
                     loadFragment(SavedCountriesFragment())
                 }
-                else ->{}
+
+                else -> {}
             }
             true
 
         }
+
     }
+
+
     private fun loadFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
-        val fragmentTransaction= fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frame_layout, fragment)
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
         fragmentTransaction.commit()
     }
+
 }
 
 
