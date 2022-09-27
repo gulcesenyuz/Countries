@@ -122,9 +122,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             firestoreRepository.getDetailCountry(countryCode).addSnapshotListener { value, error ->
                 if (value != null) {
-                    country.isFav= value.data?.get("fav") as Boolean
-                    country.code= value.data!!["code"] as String
-                    country.name= value.data!!["name"] as String
+                    country.isFav = value.data?.get("fav") as Boolean
+                    country.code = value.data!!["code"] as String
+                    country.name = value.data!!["name"] as String
 
                 }
             }

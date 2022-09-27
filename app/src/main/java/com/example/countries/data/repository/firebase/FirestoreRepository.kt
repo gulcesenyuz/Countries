@@ -44,7 +44,7 @@ class FirestoreRepository @Inject constructor() {
             }
     }
 
-    fun changeFavState(code:String, isFav:Boolean) {
+    fun changeFavState(code: String, isFav: Boolean) {
         db.collection("all countries").document(code).update("fav", isFav)
     }
 
