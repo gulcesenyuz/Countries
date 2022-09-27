@@ -37,6 +37,7 @@ class HomeFragment : Fragment(), OnClick, FavouriteState {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel.getCountriesFromApi(requireContext(), Constant.LIMIT)
         checkAndObserveDatabase()
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -57,14 +58,12 @@ class HomeFragment : Fragment(), OnClick, FavouriteState {
         viewModel.getAllCountries().observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 countryAdapter.setCountriesList(it)
-            } else {
-                viewModel.getCountriesFromApi(requireContext(), Constant.LIMIT)
-
             }
         })
     }
 
-    override fun onClickCountry(country: CountryModel) { val bundle = Bundle()
+    override fun onClickCountry(country: CountryModel) {
+        val bundle = Bundle()
         bundle.putParcelable("country", country)
         val fragment: Fragment = DetailFragment()
         fragment.arguments = bundle
