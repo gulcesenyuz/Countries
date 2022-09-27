@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.countries.R
@@ -16,6 +18,9 @@ import com.example.countries.databinding.FragmentHomeBinding
 import com.example.countries.ui.adapter.CountryAdapter
 import com.example.countries.util.*
 import com.example.countries.viewmodel.MainViewModel
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,34 +36,32 @@ class HomeFragment : Fragment(), OnClick, FavouriteState {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        checkAndObserveDatabase()
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.getCountries(Constant.LIMIT)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.rvCountryList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = countryAdapter
         }
-        collectCountriesModel()
-        //  countryDao.insertCountry(countryAdapter.hashMap[])
     }
 
-    private fun collectCountriesModel() {
-        viewModel.countriesList.observe(viewLifecycleOwner) {
-            Log.d("collectCountriesModel: ", it.toString())
-            if (it != null) {
-                countryAdapter.setCountriesList(it.data)
-            }
 
-        }
+    private fun checkAndObserveDatabase() {
+        viewModel.getAllCountries().observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                countryAdapter.setCountriesList(it)
+            } else {
+                viewModel.getCountriesFromApi(requireContext(), Constant.LIMIT)
+
+            }
+        })
     }
 
     override fun onClickCountry(country: CountryModel) {
@@ -77,11 +80,10 @@ class HomeFragment : Fragment(), OnClick, FavouriteState {
 
     override fun checkFavState(country: CountryModel, isFav: Boolean) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val code = country.code
             if (isFav) {
-                viewModel.saveCountry(requireContext(),country, code)
+                viewModel.saveCountry(requireContext(), country)
             } else {
-                viewModel.deleteCountry(requireContext(),code)
+                viewModel.deleteCountry(requireContext(), country)
             }
 
         }

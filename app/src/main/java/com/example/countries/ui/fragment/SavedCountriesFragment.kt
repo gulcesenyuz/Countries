@@ -1,7 +1,6 @@
 package com.example.countries.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.countries.R
 import com.example.countries.data.model.CountryModel
-import com.example.countries.databinding.FragmentDetailBinding
-import com.example.countries.databinding.FragmentHomeBinding
 import com.example.countries.databinding.FragmentSavedCountriesBinding
-import com.example.countries.ui.adapter.CountryAdapter
+import com.example.countries.ui.adapter.FavAdapter
 import com.example.countries.util.*
 import com.example.countries.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +21,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SavedCountriesFragment : Fragment(), OnClick, FavouriteState {
-    private var countryAdapter: CountryAdapter = CountryAdapter(this, this)
+    private var favAdapter: FavAdapter = FavAdapter(this, this)
     private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: FragmentSavedCountriesBinding
 
@@ -46,16 +43,15 @@ class SavedCountriesFragment : Fragment(), OnClick, FavouriteState {
         super.onViewCreated(view, savedInstanceState)
         binding.rvCountryList.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = countryAdapter
+            adapter = favAdapter
         }
         collectCountriesModel()
     }
 
     private fun collectCountriesModel() {
         viewModel.countriesFav.observe(viewLifecycleOwner) {
-            Log.d("collectCountriesModel: ", it.toString())
             if (it != null) {
-                countryAdapter.setCountriesList(it)
+                favAdapter.setCountriesList(it)
             }
 
         }
@@ -74,14 +70,13 @@ class SavedCountriesFragment : Fragment(), OnClick, FavouriteState {
     }
 
     override fun checkFavState(country: CountryModel, isFav: Boolean) {
+        viewModel.countriesFav
         lifecycleScope.launch(Dispatchers.IO) {
-            val code = country.code
-            if (isFav) {
-                viewModel.saveCountry(requireContext(), country, code)
-            } else {
-                viewModel.deleteCountry(requireContext(), code)
-            }
+            viewModel.deleteCountry(requireContext(), country)
+
 
         }
     }
+
+
 }

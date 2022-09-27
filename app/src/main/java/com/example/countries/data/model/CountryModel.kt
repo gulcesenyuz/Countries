@@ -19,12 +19,31 @@ import kotlinx.android.parcel.Parcelize
     }
  */
 
+/*
 @Parcelize
 data class CountryModel(
 
     @SerializedName("name")
     val name: String = "empty name",
     @SerializedName("code")
+    val code: String = "empty code",
+
+    val isFav: Boolean = false
+
+) : Parcelable
+ */
+
+@Parcelize
+class CountryModel() :Parcelable {
+    @SerializedName("name")
+    val name: String = "empty name"
+
+    @SerializedName("code")
     val code: String = "empty code"
 
-):Parcelable
+    var isFav: Boolean = false
+
+    fun changeFavState(f: Boolean) {
+        isFav = f
+    }
+}

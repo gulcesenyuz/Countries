@@ -4,5 +4,4 @@ import com.example.countries.data.model.CountryModel
 
 interface FavouriteState {
      fun checkFavState(country: CountryModel, isFav:Boolean)
-
 }

@@ -9,11 +9,13 @@ import com.example.countries.data.model.CountryModel
 import com.example.countries.data.model.DetailResponseModel
 import com.example.countries.data.model.ResponseModel
 import com.example.countries.data.repository.Repository
+import com.example.countries.ui.adapter.CountryAdapter
 import com.example.countries.util.FirestoreRepository
 import com.example.countries.util.NetworkResponse
+import com.example.countries.util.OnClick
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.ktx.toObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,11 +23,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: Repository,
-    private val firestoreRepository: FirestoreRepository
-) : ViewModel() {
+    private val firestoreRepository: FirestoreRepository) : ViewModel() {
 
-    private val _countriesList: MutableLiveData<ResponseModel?> = MutableLiveData()
-    val countriesList: MutableLiveData<ResponseModel?> get() = _countriesList
+    private val _countriesList: MutableLiveData<List<CountryModel>?> = MutableLiveData()
+    val countriesList: MutableLiveData<List<CountryModel>?> get() = _countriesList
 
     private val _countryDetail: MutableLiveData<DetailResponseModel?> = MutableLiveData()
     val countryDetail: MutableLiveData<DetailResponseModel?> get() = _countryDetail
@@ -33,7 +34,7 @@ class MainViewModel @Inject constructor(
     private val _countriesFav: MutableLiveData<List<CountryModel>?> = MutableLiveData()
     val countriesFav: MutableLiveData<List<CountryModel>?> get() = _countriesFav
 
-    fun getCountries(limit: String) {
+    fun getCountriesFromApi(context: Context, limit: String) {
         viewModelScope.launch {
             repository.getAllCountries(limit).collect { response ->
 
@@ -42,8 +43,13 @@ class MainViewModel @Inject constructor(
 
                     }
                     is NetworkResponse.Success -> {
-                        _countriesList.postValue(response.data)
-                        Log.d("VM REPosnse:", response.data.toString())
+                        response.data?.let {
+                            if (countriesList.value ==null){
+                                firestoreRepository.saveAllToFireStore(context, it)
+                            }
+                        }
+                        //getAllCountries()
+
                     }
                     is NetworkResponse.Error -> {
 
@@ -51,6 +57,42 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+     fun getAllCountries(): MutableLiveData<List<CountryModel>?> {
+        viewModelScope.launch {
+            firestoreRepository.getAllCountriesFromCollection()
+                .addSnapshotListener(
+                    EventListener<QuerySnapshot> { value, error ->
+
+                        if (error != null) {
+                            Log.d("getAllCountries:", "Listen failed $error")
+                            _countriesList.value = null
+                            return@EventListener
+                        }
+                        var allCountyList: MutableList<CountryModel> = mutableListOf()
+
+                        for (doc in value!!) {
+                            var countryItem = doc.toObject(CountryModel::class.java)
+                            allCountyList.add(countryItem)
+                        }
+                        for (doc in value.documentChanges) {
+                            when (doc.type) {
+                                DocumentChange.Type.MODIFIED -> {
+                                    for (x in allCountyList){
+                                        Log.d("getAllCountries:", x.name + " : " + x.isFav)
+
+                                    }
+
+                                }
+                            }
+                        }
+                        _countriesList.value = allCountyList
+
+                    })
+
+        }
+        return _countriesList
     }
 
     fun getCountryDetail(countryCode: String) {
@@ -73,21 +115,25 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun saveCountry(context: Context, country: CountryModel, code: String) {
+    fun saveCountry(context: Context, country: CountryModel) {
         viewModelScope.launch {
-            firestoreRepository.saveToFireStore(context, country, code)
+            country.changeFavState(true)
+            firestoreRepository.saveToFireStore(context, country)
+            firestoreRepository.changeFavState(country.code, country.isFav)
         }
     }
 
-    fun deleteCountry(context: Context, code: String) {
+    fun deleteCountry(context: Context, country: CountryModel) {
         viewModelScope.launch {
-            firestoreRepository.deleteFromFirestore(context, code)
+            country.changeFavState(false)
+            firestoreRepository.deleteFromFirestore(context, country.code)
+            firestoreRepository.changeFavState(country.code, country.isFav)
         }
     }
+
 
     fun getFavouriteCountries(): MutableLiveData<List<CountryModel>?> {
         viewModelScope.launch {
-
             firestoreRepository.getFavouriteCountriesFromCollection().addSnapshotListener(
                 EventListener<QuerySnapshot> { value, error ->
                     if (error != null) {
@@ -101,11 +147,10 @@ class MainViewModel @Inject constructor(
                         var countryItem = doc.toObject(CountryModel::class.java)
                         savedCountyList.add(countryItem)
                     }
-                    _countriesFav.value= savedCountyList
+                    _countriesFav.value = savedCountyList
                     Log.d("getFavouriteCountries:", savedCountyList.toString())
 
                 })
-
         }
         return _countriesFav
     }
