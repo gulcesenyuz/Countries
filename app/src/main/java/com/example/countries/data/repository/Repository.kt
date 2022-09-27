@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 
-class Repository @Inject constructor( private val service: ApiInterface) {
+class Repository @Inject constructor(private val service: ApiInterface) {
 
     suspend fun getAllCountries(limit: String)
             : Flow<NetworkResponse<ResponseModel>> =
@@ -51,6 +51,7 @@ class Repository @Inject constructor( private val service: ApiInterface) {
                 emit(NetworkResponse.Error(e.message))
             }
         }
+
 
 
 }

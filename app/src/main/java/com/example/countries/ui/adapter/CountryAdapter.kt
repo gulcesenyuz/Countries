@@ -16,7 +16,7 @@ class CountryAdapter constructor(
     private val favStateListener: FavouriteState
 ) : RecyclerView.Adapter<CountryAdapter.CountryViewHolder>() {
     private var favCountries: ArrayList<CountryModel> = ArrayList()
-    private var countryListt: ArrayList<CountryModel> = ArrayList()
+    private var countries: ArrayList<CountryModel> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
             : CountryAdapter.CountryViewHolder {
@@ -26,7 +26,7 @@ class CountryAdapter constructor(
     }
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
-        val current = countryListt[position]
+        val current = countries[position]
         holder.bind(current)
         holder.bindView.textViewCountryName.setOnClickListener {
             clickListener.onClickCountry(current)
@@ -51,12 +51,12 @@ class CountryAdapter constructor(
     }
 
     override fun getItemCount(): Int {
-        return countryListt.size
+        return countries.size
     }
 
     fun setCountriesList(countryList: List<CountryModel>) {
-        this.countryListt.apply {
-            countryListt.clear()
+        this.countries.apply {
+            countries.clear()
             addAll(countryList)
             notifyDataSetChanged()
 
@@ -73,7 +73,7 @@ class CountryAdapter constructor(
 
     private fun favState(country: CountryModel): Boolean {
 
-        for (item in favCountries) {
+            for (item in favCountries) {
             if (country.code == item.code) {
                 return true
             }
