@@ -36,10 +36,10 @@ data class CountryModel(
 @Parcelize
 class CountryModel() :Parcelable {
     @SerializedName("name")
-    val name: String = "empty name"
+    var name: String = "empty name"
 
     @SerializedName("code")
-    val code: String = "empty code"
+    var code: String = "empty code"
 
     var isFav: Boolean = false
 

@@ -64,8 +64,7 @@ class HomeFragment : Fragment(), OnClick, FavouriteState {
         })
     }
 
-    override fun onClickCountry(country: CountryModel) {
-        val bundle = Bundle()
+    override fun onClickCountry(country: CountryModel) { val bundle = Bundle()
         bundle.putParcelable("country", country)
         val fragment: Fragment = DetailFragment()
         fragment.arguments = bundle

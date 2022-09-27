@@ -7,6 +7,7 @@ import com.example.countries.data.model.CountryModel
 import com.example.countries.data.model.FirestoreModel
 import com.example.countries.data.model.ResponseModel
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import javax.inject.Inject
@@ -64,6 +65,11 @@ class FirestoreRepository @Inject constructor() {
         var collectionReference = db.collection("countries")
         return collectionReference
 
+    }
+
+    fun getDetailCountry(id: String): DocumentReference {
+        var documentRef = db.collection("all countries").document(id)
+        return documentRef
     }
 
     fun getAllCountriesFromCollection(): CollectionReference {

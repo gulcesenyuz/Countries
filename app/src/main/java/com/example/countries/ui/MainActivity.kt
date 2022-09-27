@@ -2,19 +2,16 @@ package com.example.countries.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 
 
 import com.example.countries.R
 import com.example.countries.databinding.ActivityMainBinding
 import com.example.countries.ui.fragment.HomeFragment
 import com.example.countries.ui.fragment.SavedCountriesFragment
-import com.example.countries.util.Constant
-import com.example.countries.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -26,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide();
+
 
         loadFragment(HomeFragment())
         binding.bottomNav.setOnItemSelectedListener {

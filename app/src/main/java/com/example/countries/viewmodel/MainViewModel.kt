@@ -23,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: Repository,
-    private val firestoreRepository: FirestoreRepository) : ViewModel() {
+    private val firestoreRepository: FirestoreRepository
+) : ViewModel() {
 
     private val _countriesList: MutableLiveData<List<CountryModel>?> = MutableLiveData()
     val countriesList: MutableLiveData<List<CountryModel>?> get() = _countriesList
@@ -33,6 +34,8 @@ class MainViewModel @Inject constructor(
 
     private val _countriesFav: MutableLiveData<List<CountryModel>?> = MutableLiveData()
     val countriesFav: MutableLiveData<List<CountryModel>?> get() = _countriesFav
+
+    var country: CountryModel = CountryModel()
 
     fun getCountriesFromApi(context: Context, limit: String) {
         viewModelScope.launch {
@@ -44,7 +47,7 @@ class MainViewModel @Inject constructor(
                     }
                     is NetworkResponse.Success -> {
                         response.data?.let {
-                            if (countriesList.value ==null){
+                            if (countriesList.value == null) {
                                 firestoreRepository.saveAllToFireStore(context, it)
                             }
                         }
@@ -59,7 +62,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-     fun getAllCountries(): MutableLiveData<List<CountryModel>?> {
+    fun getAllCountries(): MutableLiveData<List<CountryModel>?> {
         viewModelScope.launch {
             firestoreRepository.getAllCountriesFromCollection()
                 .addSnapshotListener(
@@ -79,7 +82,7 @@ class MainViewModel @Inject constructor(
                         for (doc in value.documentChanges) {
                             when (doc.type) {
                                 DocumentChange.Type.MODIFIED -> {
-                                    for (x in allCountyList){
+                                    for (x in allCountyList) {
                                         Log.d("getAllCountries:", x.name + " : " + x.isFav)
 
                                     }
@@ -113,6 +116,21 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getDetail(countryCode: String): CountryModel {
+        viewModelScope.launch {
+            firestoreRepository.getDetailCountry(countryCode).addSnapshotListener { value, error ->
+                if (value != null) {
+                    country.isFav= value.data?.get("fav") as Boolean
+                    country.code= value.data!!["code"] as String
+                    country.name= value.data!!["name"] as String
+
+                }
+            }
+
+        }
+        return country
     }
 
     fun saveCountry(context: Context, country: CountryModel) {
