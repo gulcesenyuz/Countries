@@ -6,11 +6,11 @@
 Screens:
 
 ![](screenshots/HomeScreen.jpeg)
-![](screenshots/detailScreeen.jpeg)
+![](screenshots/detailScreen.jpeg)
 ![](screenshots/SavedScreen.jpeg)
 
 
 Firestore Database:
 
-![](screenshots/firestore1.jpeg)
-![](screenshots/firestore2.jpeg)
+![](screenshots/firestore1.png)
+![](screenshots/firestore2.png)
