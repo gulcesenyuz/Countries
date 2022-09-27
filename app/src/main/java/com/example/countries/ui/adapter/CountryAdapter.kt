@@ -71,15 +71,4 @@ class CountryAdapter constructor(
     }
 
 
-    private fun favState(country: CountryModel): Boolean {
-
-        for (item in favCountries) {
-            if (country.code == item.code) {
-                return true
-            }
-        }
-        return false
-    }
-
-
 }

@@ -20,7 +20,6 @@ class Repository @Inject constructor(private val service: ApiInterface) {
                 val result = service.getAllCountries(limit)
                 if (result.isSuccessful) {
                     val countriesResponse = result.body()
-                    Log.d("Result Country: ", countriesResponse.toString())
                     emit(NetworkResponse.Success(countriesResponse))
                 } else {
                     emit(NetworkResponse.Error("Result error"))
@@ -39,7 +38,6 @@ class Repository @Inject constructor(private val service: ApiInterface) {
                 val result = service.getCountryDetail(countryCode)
                 if (result.isSuccessful) {
                     val countryDetailResponse = result.body()
-                    Log.d("Detail Result Country: ", countryDetailResponse.toString())
                     emit(NetworkResponse.Success(countryDetailResponse))
 
                 } else {

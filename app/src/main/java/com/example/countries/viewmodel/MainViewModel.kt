@@ -166,7 +166,6 @@ class MainViewModel @Inject constructor(
                         savedCountyList.add(countryItem)
                     }
                     _countriesFav.value = savedCountyList
-                    Log.d("getFavouriteCountries:", savedCountyList.toString())
 
                 })
         }
